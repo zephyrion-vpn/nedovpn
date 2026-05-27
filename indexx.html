@@ -2245,8 +2245,6 @@
         })
       });
       if (ok) {
-        showAlert('reg', 'success', data.message || 'Письмо подтверждения отправлено. Проверьте почту.');
-        document.getElementById('reg-password').value = '';
         // FIX: если бэкенд сразу вернул токены после регистрации — авторизуем
         if (data.access_token) {
           setTokens(data.access_token, data.refresh_token || null);
@@ -2254,13 +2252,14 @@
             closeModal('login');
             await loadUserData();
             openProfileModal(currentSub);
-          }, 1500);
+          }, 500);
         } else {
-          // Если токенов нет, переключаем на вкладку входа
+          // Если токенов нет, переключаем на вкладку входа с подставленным email
           setTimeout(() => {
             switchAuthTab('login');
             document.getElementById('login-email').value = email;
-          }, 1200);
+            showAlert('login', 'info', 'Регистрация успешна! Теперь войдите в аккаунт.');
+          }, 800);
         }
       } else {
         showAlert('reg', 'error', data.detail || data.message || 'Ошибка регистрации');
@@ -2287,27 +2286,7 @@
         setTokens(data.access_token, data.refresh_token || null);
         closeModal('login');
         await loadUserData();
-        // FIX: если пользователь пришёл из startPayment → открываем оплату после логина
-        if (currentPlan) {
-          openModal('payment');
-          const plan = PLANS[currentPlan] || PLANS['1m'];
-          const desc = document.getElementById('pay-desc');
-          if (desc) {
-            desc.textContent = '';
-            const text = document.createTextNode('Тариф: ');
-            const strong = document.createElement('strong');
-            strong.textContent = plan.label;
-            desc.appendChild(text);
-            desc.appendChild(strong);
-          }
-          const a = document.getElementById('payment-alert');
-          if (a) { a.className = 'alert'; a.textContent = ''; }
-          const btn2 = document.getElementById('btn-lava');
-          if (btn2) { btn2.disabled = false; btn2.textContent = '💳 Оплатить картой / СБП'; }
-          isPaymentPending = false;
-        } else {
-          openProfileModal(currentSub);
-        }
+        openProfileModal(currentSub);
       } else if (data && data.detail && data.detail.toLowerCase().includes('not found')) {
         // Аккаунт не найден — переключаем на вкладку регистрации
         switchAuthTab('reg');
@@ -2458,29 +2437,8 @@
 
   // ─── PAYMENT ───
   function startPayment(planKey) {
-    currentPlan = planKey;
-    // FIX: незарегистрированный пользователь → открываем логин, не показываем ошибку
-    if (!getToken()) {
-      openModal('login');
-      return;
-    }
-
-    const plan = PLANS[planKey] || PLANS['1m'];
-    const desc = document.getElementById('pay-desc');
-    if (desc) {
-      desc.textContent = '';
-      const text = document.createTextNode('Тариф: ');
-      const strong = document.createElement('strong');
-      strong.textContent = plan.label;
-      desc.appendChild(text);
-      desc.appendChild(strong);
-    }
-    const a = document.getElementById('payment-alert');
-    if (a) { a.className = 'alert'; a.textContent = ''; }
-    const btn = document.getElementById('btn-lava');
-    if (btn) { btn.disabled = false; btn.textContent = '💳 Оплатить картой / СБП'; }
-    isPaymentPending = false;
-    openModal('payment');
+    // Просто открываем окно входа, без сохранения плана и без открытия оплаты
+    openModal('login');
   }
 
   async function doLavaPayment() {
