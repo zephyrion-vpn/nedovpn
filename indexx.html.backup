@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<meta name="description" content="ZephyrionVPN — быстрый VPN на VLESS + Reality. Без логов, серверы в Германии, Польше и России. Скорость до 2.5 Гбит/с. От 89₽/мес.">
+<meta name="keywords" content="vpn, vless, reality, vpn россия, обойти блокировку, приватность, zephyrionvpn">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://zephyrion.ru/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="ZephyrionVPN — Невидим. Защищён.">
+<meta property="og:description" content="Современный VPN на VLESS + Reality. Без логов, до 2.5 Гбит/с. От 89₽/мес.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zephyrion.ru">
+<meta property="og:image" content="https://zephyrion.ru/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f0186e">
+
+<!-- Favicon -->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>ZephyrionVPN — Невидим. Защищён.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<!-- JSON-LD FAQ Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"Как подключиться к ZephyrionVPN?","acceptedAnswer":{"@type":"Answer","text":"Нажмите «Подключиться», оплатите выбранный период — и бот @ZephyrionVPN_bot автоматически пришлёт конфигурационный файл и инструкцию."}},
+    {"@type":"Question","name":"Что такое VLESS + Reality?","acceptedAnswer":{"@type":"Answer","text":"VLESS + Reality — протокол нового поколения. Трафик выглядит как обычный HTTPS. Не детектируется DPI и блокировками провайдеров."}},
+    {"@type":"Question","name":"Храните ли вы логи?","acceptedAnswer":{"@type":"Answer","text":"Нет. Мы не записываем IP-адреса, время подключений, DNS-запросы или любую другую информацию о вашей активности."}}
+  ]
+}
+</script>
+
+<style>
+  :root {
+    --white: #ffffff;
+    --off-white: #fdf6fb;
+    --pink-light: #fce0ef;
+    --pink: #f0186e;
+    --pink-soft: #ff6db0;
+    --pink-pale: #ffe0f0;
+    --pink-deep: #c4105a;
+    --dark: #180a10;
+    --muted: #9e6585;
+    --shadow-pink: 0 8px 40px rgba(240,24,110,0.13);
+    --shadow-pink-hover: 0 16px 60px rgba(240,24,110,0.24);
+    --radius-card: 20px;
+    --radius-pill: 100px;
+    /* z-index scale */
+    --z-nav: 1000;
+    --z-menu: 999;
+    --z-modal: 9999;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--dark);
+    background: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, .logo { font-family: 'Syne', sans-serif; }
+
+  /* Focus visible — доступность клавиатуры */
+  :focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Уважаем prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .fade-up {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: var(--z-nav);
+    background: rgba(255,255,255,0.93);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(240,24,110,0.1);
+    box-shadow: 0 2px 24px rgba(240,24,110,0.07);
+  }
+
+  .nav-inner {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .logo span { color: var(--pink); font-size: 24px; line-height: 1; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--dark); }
+
+  .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  /* Убираем инлайн-стиль — выносим в CSS */
+  .nav-auth-out { display: flex; gap: 8px; align-items: center; }
+
+  .btn-ghost {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dark);
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-ghost:hover { background: var(--pink-light); }
+
+  /* Базовая кнопка (DRY) */
+  .btn-base {
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .btn-pink {
+    background: var(--pink);
+    color: var(--white);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 18px rgba(240,24,110,0.32);
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-pink:hover {
+    background: var(--pink-deep);
+    box-shadow: 0 6px 28px rgba(240,24,110,0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: none;
+    border: 2px solid var(--dark);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--pink);
+    color: var(--pink);
+    transform: translateY(-1px);
+  }
+
+  .btn-pink-lg {
+    background: var(--pink);
+    color: var(--white);
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 15px 36px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 6px 30px rgba(240,24,110,0.38);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-pink-lg:hover {
+    background: var(--pink-deep);
+    box-shadow: 0 10px 40px rgba(240,24,110,0.52);
+    transform: translateY(-2px);
+  }
+
+  /* Mobile menu */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-menu);
+    background: rgba(24,10,16,0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .mobile-menu-overlay.open { display: block; }
+
+  .mobile-menu {
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    z-index: var(--z-nav);
+    background: var(--white);
+    border-bottom: 1px solid rgba(240,24,110,0.1);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+    padding: 20px 24px 28px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a, .mobile-menu button {
+    text-decoration: none;
+    color: var(--dark);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+    border-bottom: 1px solid rgba(240,24,110,0.07);
+  }
+
+  .mobile-menu .mob-buy {
+    margin-top: 12px;
+    background: var(--pink);
+    color: var(--white);
+    border-radius: var(--radius-pill);
+    padding: 13px 24px;
+    font-weight: 700;
+    text-align: center;
+    border: none;
+    box-shadow: 0 4px 18px rgba(240,24,110,0.32);
+    cursor: pointer;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    background: none;
+    border: none;
+    flex-shrink: 0;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: var(--dark);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.active span:nth-child(2) { opacity: 0; }
+  .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .user-nav { display: none; align-items: center; gap: 10px; }
+  .user-nav.visible { display: flex; }
+  .user-name { font-size: 13px; font-weight: 600; color: var(--dark); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sub-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--pink-light);
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    padding: 100px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+  .hero-blob-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(240,24,110,0.14) 0%, transparent 70%); top: -150px; right: -200px; }
+  .hero-blob-2 { width: 450px; height: 450px; background: radial-gradient(circle, rgba(255,109,176,0.12) 0%, transparent 70%); bottom: 0; left: -120px; }
+
+  .hero-inner {
+    max-width: 1160px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink-light);
+    color: var(--pink);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 24px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -3px;
+    margin-bottom: 24px;
+  }
+
+  .hero-title .line1 { color: var(--dark); display: block; }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(130deg, var(--pink) 0%, var(--pink-soft) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 40px;
+    max-width: 460px;
+  }
+
+  .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .hero-tg-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .hero-tg-note a { color: var(--pink); text-decoration: none; font-weight: 600; }
+  .hero-tg-note a:hover { text-decoration: underline; }
+
+  .hero-visual { display: flex; justify-content: center; align-items: center; }
+  .hero-svg-wrap { width: 100%; max-width: 460px; aspect-ratio: 1; }
+
+  /* will-change только на анимируемые группы */
+  .hero-svg-wrap .anim-g { will-change: transform; }
+
+  .hero-stats { max-width: 1160px; width: 100%; margin-top: 64px; position: relative; z-index: 1; }
+
+  .stats-bar {
+    background: var(--off-white);
+    border: 1px solid rgba(240,24,110,0.12);
+    border-radius: 20px;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--dark); display: block; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 3px; display: block; }
+  .stat-divider { width: 1px; height: 44px; background: rgba(240,24,110,0.15); flex-shrink: 0; }
+
+  /* ─── SECTIONS ─── */
+  .section-inner { max-width: 1160px; margin: 0 auto; position: relative; z-index: 1; }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--pink); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; display: block; }
+  .section-title { font-size: clamp(30px, 5vw, 50px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 48px; }
+
+  /* ─── FEATURES ─── */
+  .features {
+    background: var(--pink-light);
+    padding: 110px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .features-blob {
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.45) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    pointer-events: none;
+  }
+
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  .feature-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    padding: 36px 30px;
+    box-shadow: var(--shadow-pink);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--pink-soft));
+    border-radius: 20px 20px 0 0;
+  }
+
+  .feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-pink-hover); }
+  .feature-icon { font-size: 42px; margin-bottom: 18px; display: block; line-height: 1; }
+  .feature-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .feature-desc { font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+  /* ─── SERVERS ─── */
+  .servers { background: var(--white); padding: 110px 24px; }
+
+  .servers-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .server-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--off-white);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 18px 26px;
+    transition: all 0.25s;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .server-card:hover { border-color: var(--pink); background: var(--white); box-shadow: 0 4px 24px rgba(240,24,110,0.1); }
+
+  .server-card.cs { opacity: 0.5; }
+  .server-card.cs:hover { border-color: transparent; background: var(--off-white); box-shadow: none; }
+
+  .server-left { display: flex; align-items: center; gap: 16px; }
+  .server-flag { font-size: 30px; line-height: 1; }
+  .server-name { font-weight: 700; font-size: 15px; }
+  .server-region { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .server-right { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .sv { font-weight: 700; font-size: 14px; font-family: 'Syne', sans-serif; }
+  .sl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .pg { color: #22c55e; }
+  .ping-badge { background: #dcfce7; color: #16a34a; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-pill); white-space: nowrap; }
+  .soon-badge { background: var(--pink-light); color: var(--pink); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-pill); white-space: nowrap; }
+
+  /* ─── PRICING ─── */
+  .pricing {
+    background: linear-gradient(145deg, #f0186e 0%, #b5105a 45%, #8c0d46 100%);
+    padding: 110px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -200px; right: -200px;
+    pointer-events: none;
+  }
+
+  .pricing .section-title { color: var(--white); }
+  .pricing .section-label { color: rgba(255,255,255,0.6); }
+
+  .pricing-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .plan-card {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 28px 20px;
+    color: var(--white);
+    position: relative;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    text-align: center;
+  }
+
+  .plan-card:hover { background: rgba(255,255,255,0.16); transform: translateY(-3px); }
+
+  .plan-card.best {
+    background: var(--white);
+    border-color: var(--white);
+    color: var(--dark);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    transform: scale(1.04);
+  }
+
+  .plan-card.best:hover { transform: scale(1.04) translateY(-3px); }
+
+  .best-badge {
+    position: absolute;
+    top: -13px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--pink);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+
+  .plan-period { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.65; margin-bottom: 12px; }
+  .plan-card.best .plan-period { color: var(--muted); opacity: 1; }
+
+  .plan-price { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; margin-bottom: 3px; }
+
+  .plan-per { font-size: 11px; opacity: 0.5; margin-bottom: 2px; }
+  .plan-total { font-size: 12px; opacity: 0.45; margin-bottom: 5px; }
+  .plan-card.best .plan-per, .plan-card.best .plan-total { color: var(--muted); }
+
+  .plan-save {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.18);
+    color: var(--white);
+    min-height: 22px;
+  }
+
+  .plan-card.best .plan-save { background: var(--pink-light); color: var(--pink); }
+  .plan-save.inv { visibility: hidden; }
+
+  .btn-plan-buy {
+    width: 100%;
+    padding: 11px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 16px;
+    display: block;
+    text-align: center;
+  }
+
+  .btn-plan-buy:hover { background: rgba(255,255,255,0.15); border-color: var(--white); }
+
+  .btn-plan-buy.bb {
+    background: var(--pink);
+    border-color: var(--pink);
+    color: var(--white);
+    box-shadow: 0 6px 24px rgba(240,24,110,0.4);
+  }
+
+  .btn-plan-buy.bb:hover { background: var(--pink-deep); transform: translateY(-1px); }
+
+  .pricing-inc {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 26px 30px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 14px;
+  }
+
+  .pricing-inc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .pricing-inc-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    list-style: none;
+  }
+
+  .pricing-inc-list li {
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+  }
+
+  .pricing-inc-list li::before {
+    content: '✓';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px; min-width: 18px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    flex-shrink: 0;
+    color: var(--white);
+    margin-top: 1px;
+  }
+
+  .pricing-refund-note {
+    margin-top: 14px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ─── REFERRALS ─── */
+  .referrals {
+    background: var(--white);
+    padding: 96px 24px;
+    border-top: 1px solid rgba(240,24,110,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .referrals::before {
+    content: '';
+    position: absolute;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,24,110,0.1), transparent 70%);
+    right: -160px; top: -180px;
+    pointer-events: none;
+  }
+
+  .ref-card {
+    background: var(--off-white);
+    border: 1px solid rgba(240,24,110,0.12);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: var(--shadow-pink);
+    margin-top: 34px;
+  }
+
+  .ref-rules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .ref-rule {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 18px;
+    border: 1px solid rgba(240,24,110,0.1);
+  }
+
+  .ref-rule strong { display: block; font-size: 16px; margin-bottom: 6px; color: var(--dark); }
+  .ref-rule span { display: block; font-size: 13px; line-height: 1.55; color: var(--muted); }
+
+  .ref-auth-box {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    border: 1px dashed rgba(240,24,110,0.32);
+  }
+
+  .ref-link-box {
+    display: none;
+    background: var(--white);
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid rgba(240,24,110,0.1);
+  }
+
+  .ref-link-row { display: flex; gap: 10px; margin: 14px 0; }
+  .ref-link-row input {
+    flex: 1;
+    border: 1.5px solid var(--pink-light);
+    border-radius: var(--radius-pill);
+    padding: 12px 16px;
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    min-width: 0;
+  }
+
+  .ref-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .ref-stat {
+    background: var(--off-white);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .ref-stat strong { display: block; font-family: 'Syne', sans-serif; font-size: 24px; color: var(--dark); }
+  .ref-stat span { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── DELIVERY ─── */
+  .delivery {
+    background: var(--off-white);
+    padding: 90px 24px;
+    border-top: 1px solid rgba(240,24,110,0.08);
+  }
+
+  .delivery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 44px;
+  }
+
+  .del-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 26px 24px;
+    border: 1px solid rgba(240,24,110,0.1);
+  }
+
+  .del-icon { font-size: 30px; margin-bottom: 14px; display: block; }
+  .del-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .del-text { font-size: 13px; line-height: 1.65; color: var(--muted); }
+  .del-text a { color: var(--pink); text-decoration: none; }
+  .del-text a:hover { text-decoration: underline; }
+
+  /* ─── RETURN POLICY ─── */
+  .return-policy {
+    background: var(--white);
+    padding: 90px 24px;
+    border-top: 1px solid rgba(240,24,110,0.08);
+  }
+
+  .return-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 44px;
+  }
+
+  .ret-card { border-radius: 16px; padding: 26px 24px; }
+  .ret-card.yes { background: #f0fdf4; border: 1.5px solid #86efac; }
+  .ret-card.no { background: #fff1f2; border: 1.5px solid #fca5a5; }
+
+  .ret-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+  .ret-card.yes .ret-title { color: #15803d; }
+  .ret-card.no .ret-title { color: #b91c1c; }
+
+  .ret-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .ret-card ul li { font-size: 13px; line-height: 1.5; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; }
+  .ret-card ul li::before { flex-shrink: 0; margin-top: 1px; font-weight: 700; }
+  .ret-card.yes ul li::before { content: '✓'; color: #16a34a; }
+  .ret-card.no ul li::before { content: '✗'; color: #dc2626; }
+
+  .ret-contact {
+    margin-top: 24px;
+    padding: 18px 22px;
+    background: var(--pink-light);
+    border-radius: 14px;
+    font-size: 14px;
+    color: var(--dark);
+    line-height: 1.65;
+  }
+
+  .ret-contact a { color: var(--pink); text-decoration: none; font-weight: 600; }
+  .ret-contact a:hover { text-decoration: underline; }
+
+  /* ─── CONTACTS ─── */
+  .contacts { background: var(--pink-light); padding: 90px 24px; }
+
+  .contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 44px;
+  }
+
+  .con-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow-pink);
+  }
+
+  .con-label { font-size: 11px; font-weight: 700; color: var(--pink); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: block; }
+  .con-value { font-size: 14px; font-weight: 600; color: var(--dark); text-decoration: none; display: block; word-break: break-word; }
+  .con-value:hover { color: var(--pink); }
+  .con-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ─── FAQ ─── */
+  .faq { background: var(--white); padding: 110px 24px; }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    border: 1.5px solid rgba(240,24,110,0.12);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.25s;
+  }
+
+  .faq-item.open { border-color: var(--pink); }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 22px;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    color: var(--dark);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    transition: background 0.2s;
+  }
+
+  .faq-item.open .faq-q { background: var(--off-white); }
+
+  .faq-icon {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--pink-light);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    font-size: 16px;
+    color: var(--pink);
+    pointer-events: none;
+  }
+
+  .faq-item.open .faq-icon { background: var(--pink); color: var(--white); transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    padding: 0 22px;
+    font-size: 14px; line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .faq-item.open .faq-a { max-height: 320px; padding: 0 22px 20px; }
+  .faq-a a { color: var(--pink); text-decoration: none; }
+  .faq-a a:hover { text-decoration: underline; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--dark);
+    color: rgba(255,255,255,0.85);
+    padding: 72px 24px 44px;
+  }
+
+  .footer-inner { max-width: 1160px; margin: 0 auto; }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 44px;
+  }
+
+  .footer-brand .logo { color: var(--white); font-size: 22px; margin-bottom: 14px; display: inline-flex; }
+  .footer-brand p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.45); max-width: 260px; }
+
+  .footer-brand .legal-note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.75;
+  }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 16px;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+  .footer-col a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    transition: color 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    text-align: left;
+  }
+
+  .footer-col a:hover { color: var(--pink-soft); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .footer-bottom a { color: var(--pink-soft); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+  .footer-bottom a:hover { color: var(--white); }
+
+  /* ─── MODALS ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    background: rgba(24,10,16,0.55);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 40px 120px rgba(240,24,110,0.17);
+    position: relative;
+    animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--off-white);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--muted);
+    transition: all 0.2s;
+    z-index: 1;
+  }
+
+  .modal-close:hover { background: var(--pink-light); color: var(--pink); }
+
+  .modal-body { padding: 44px 40px; }
+  .modal-body h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .modal-body .msub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .modal-body .msub a { color: var(--pink); text-decoration: none; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+  .form-group input {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1.5px solid rgba(240,24,110,0.15);
+    border-radius: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    background: var(--off-white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus { border-color: var(--pink); background: var(--white); }
+  .form-group input::placeholder { color: var(--muted); }
+  .form-hint { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.35; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 13px;
+    background: var(--pink);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 28px rgba(240,24,110,0.35);
+    margin-top: 6px;
+  }
+
+  .btn-submit:hover { background: var(--pink-deep); transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+  .mswitch { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
+  .mswitch a { color: var(--pink); font-weight: 600; text-decoration: none; cursor: pointer; }
+
+  .alert { padding: 10px 14px; border-radius: 9px; font-size: 13px; margin-bottom: 14px; display: none; }
+  .alert.error { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; display: block; }
+  .alert.success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; display: block; }
+
+  .modal-scroll { max-height: 60vh; overflow-y: auto; padding-right: 6px; }
+  .modal-scroll::-webkit-scrollbar { width: 3px; }
+  .modal-scroll::-webkit-scrollbar-thumb { background: var(--pink-light); border-radius: 4px; }
+  .modal-scroll h3 { font-size: 14px; font-weight: 700; margin: 18px 0 8px; color: var(--dark); }
+  .modal-scroll p { font-size: 13px; line-height: 1.7; color: var(--muted); margin-bottom: 8px; }
+
+  /* Payment modal */
+  .pay-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+  .pay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 20px;
+    border-radius: var(--radius-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    border: none;
+    width: 100%;
+  }
+
+  .pay-btn.lava { background: var(--pink); color: var(--white); box-shadow: 0 6px 24px rgba(240,24,110,0.35); }
+  .pay-btn.lava:hover { background: var(--pink-deep); transform: translateY(-1px); }
+  .pay-btn.lava:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+  .pay-legal { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; line-height: 1.5; }
+  .pay-legal a { color: var(--pink); cursor: pointer; text-decoration: none; }
+  .pay-legal a:hover { text-decoration: underline; }
+
+  /* Profile modal helpers */
+  .profile-sub-block {
+    background: var(--off-white);
+    border: 1px solid rgba(240,24,110,0.12);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .profile-sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .profile-sub-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .profile-expires-row { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .profile-url-block { margin-bottom: 16px; }
+  .profile-url-label { font-size: 12px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+  .profile-url-row { display: flex; gap: 8px; }
+  .profile-url-row input {
+    flex: 1;
+    border: 1.5px solid var(--pink-light);
+    border-radius: var(--radius-pill);
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--dark);
+    background: var(--off-white);
+    min-width: 0;
+  }
+  .profile-inactive-block {
+    background: var(--pink-light);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .profile-inactive-icon { font-size: 32px; margin-bottom: 8px; }
+  .profile-inactive-title { font-weight: 700; margin-bottom: 6px; }
+  .profile-inactive-sub { font-size: 13px; color: var(--muted); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes float1 { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(3deg); } }
+  @keyframes float2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(14px) rotate(-2deg); } }
+  @keyframes float3 { 0%, 100% { transform: translateY(0); } 33% { transform: translateY(-10px); } 66% { transform: translateY(7px); } }
+  @keyframes pulse-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s cubic-bezier(0.4,0,0.2,1), transform 0.65s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero-visual { display: none; }
+    .hero-sub { margin: 0 auto 36px; }
+    .hero-buttons { justify-content: center; }
+    .hero-tg-note { justify-content: center; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-plans-grid { grid-template-columns: 1fr 1fr; }
+    .plan-card.best { transform: scale(1); }
+    .plan-card.best:hover { transform: translateY(-3px); }
+    .pricing-inc-list { grid-template-columns: 1fr 1fr; }
+    .ref-rules { grid-template-columns: 1fr; }
+    .ref-stats { grid-template-columns: 1fr 1fr; }
+    .delivery-grid { grid-template-columns: 1fr; gap: 14px; }
+    .return-grid { grid-template-columns: 1fr; }
+    .contacts-grid { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .hero { padding: 84px 20px 48px; }
+    .hero-title { letter-spacing: -2px; }
+    .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
+    .stat-divider { display: none; }
+    .features { padding: 80px 20px; }
+    .features-grid { grid-template-columns: 1fr; gap: 14px; }
+    .servers { padding: 80px 20px; }
+    .server-card { padding: 14px 18px; }
+    .pricing { padding: 80px 20px; }
+    .pricing-plans-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .plan-card { padding: 22px 14px; }
+    .plan-price { font-size: 30px; }
+    .pricing-inc-list { grid-template-columns: 1fr; }
+    .pricing-inc { padding: 22px 18px; }
+    .delivery, .return-policy, .contacts { padding: 64px 20px; }
+    .contacts-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .faq { padding: 80px 20px; }
+    footer { padding: 56px 20px 36px; }
+    .footer-top { grid-template-columns: 1fr; gap: 28px; }
+    .modal-body { padding: 28px 20px; }
+    .modal { border-radius: 20px; }
+    .section-title { letter-spacing: -1px; }
+    /* Мобильные модалки — снизу экрана */
+    .modal-overlay { padding: 0; align-items: flex-end; }
+    .modal {
+      border-radius: 24px 24px 0 0;
+      max-width: 100% !important;
+      max-height: 92dvh;
+      overflow-y: auto;
+    }
+    .modal-close { top: 14px; right: 14px; }
+    /* Ref link */
+    .ref-link-row { flex-direction: column; }
+    /* Profile URL row на мобилке */
+    .profile-url-row { flex-direction: column; }
+    .profile-url-row input { font-size: 11px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-buttons { flex-direction: column; align-items: stretch; }
+    .hero-buttons .btn-pink-lg, .hero-buttons .btn-outline { justify-content: center; }
+    .pricing-plans-grid { grid-template-columns: 1fr; }
+    .contacts-grid { grid-template-columns: 1fr; }
+    .btn-ghost { padding: 7px 10px; font-size: 13px; }
+    .btn-pink { padding: 8px 14px; font-size: 13px; }
+    /* Минимум 48px для тач-таргетов */
+    .btn-plan-buy { min-height: 48px; }
+    .faq-q { min-height: 48px; }
+    .form-group input { font-size: 16px; /* iOS zoom prevention */ }
+    .btn-submit { min-height: 50px; font-size: 16px; }
+  }
+
+  /* ─── LOGIN MODAL TABS ─── */
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    border-radius: 12px;
+    background: var(--off-white);
+    padding: 4px;
+    margin-bottom: 22px;
+  }
+  .auth-tab {
+    flex: 1;
+    padding: 9px 12px;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.2s;
+  }
+  .auth-tab.active {
+    background: var(--white);
+    color: var(--dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+  }
+  .auth-panel { display: none; }
+  .auth-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<nav role="navigation" aria-label="Основная навигация">
+  <div class="nav-inner">
+    <a href="#" class="logo" aria-label="ZephyrionVPN — на главную">ZEPHYRION<span aria-hidden="true">·</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Возможности</a></li>
+      <li><a href="#servers">Серверы</a></li>
+      <li><a href="#pricing">Тарифы</a></li>
+      <li><a href="#referrals">Рефералы</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div id="nav-auth-out" class="nav-auth-out">
+        <button class="btn-ghost" onclick="openModal('login')">Войти</button>
+        <button class="btn-pink" onclick="startPayment('1m')">Начать</button>
+      </div>
+      <div id="nav-auth-in" class="user-nav">
+        <a href="#" id="nav-username" class="user-name" style="text-decoration:none;color:inherit;" onclick="event.preventDefault();openProfileModal(currentSub)">—</a>
+        <span class="sub-badge" id="nav-sub-badge">Нет подписки</span>
+        <button class="btn-ghost" onclick="doLogout()">Выйти</button>
+      </div>
+    </div>
+    <!-- aria-expanded обновляется в JS -->
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()"
+            aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMenu()" aria-hidden="true"></div>
+<div class="mobile-menu" id="mobile-menu" role="menu">
+  <a href="#features" onclick="closeMenu()" role="menuitem">Возможности</a>
+  <a href="#servers" onclick="closeMenu()" role="menuitem">Серверы</a>
+  <a href="#pricing" onclick="closeMenu()" role="menuitem">Тарифы</a>
+  <a href="#referrals" onclick="closeMenu()" role="menuitem">Рефералы</a>
+  <a href="#contacts" onclick="closeMenu()" role="menuitem">Контакты</a>
+  <a href="#faq" onclick="closeMenu()" role="menuitem">FAQ</a>
+  <button onclick="closeMenu(); openModal('login')" role="menuitem">Войти</button>
+  <button class="mob-buy" onclick="closeMenu(); startPayment('1m')" role="menuitem">Купить подписку</button>
+</div>
+
+<main>
+
+<section class="hero">
+  <div class="hero-blob hero-blob-1" aria-hidden="true"></div>
+  <div class="hero-blob hero-blob-2" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="fade-up">
+      <div class="hero-eyebrow" aria-hidden="true">✦ VLESS + Reality · Следующий уровень</div>
+      <h1 class="hero-title">
+        <span class="line1">НЕВИДИМ.</span>
+        <span class="line2">ЗАЩИЩЁН.</span>
+      </h1>
+      <p class="hero-sub">Протокол VLESS + Reality — трафик неотличим от HTTPS.<br>Быстро. Надёжно. Без лишнего шума.</p>
+      <div class="hero-buttons">
+        <button class="btn-pink-lg" onclick="startPayment('1m')">Подключиться</button>
+        <a href="#features" class="btn-outline">Узнать больше</a>
+      </div>
+      <div class="hero-tg-note">
+        Канал: <a href="https://t.me/ZephyrionVPN" target="_blank" rel="noopener noreferrer">@ZephyrionVPN</a>
+        &nbsp;·&nbsp; Бот: <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-svg-wrap">
+        <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" role="presentation">
+          <defs>
+            <radialGradient id="g1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0186e" stop-opacity="0.28"/><stop offset="100%" stop-color="#f0186e" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff6db0" stop-opacity="0.32"/><stop offset="100%" stop-color="#ff6db0" stop-opacity="0"/></radialGradient>
+            <radialGradient id="g3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0186e" stop-opacity="0.18"/><stop offset="100%" stop-color="#f0186e" stop-opacity="0"/></radialGradient>
+            <radialGradient id="gC" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#ff6db0" stop-opacity="0.55"/><stop offset="50%" stop-color="#f0186e" stop-opacity="0.38"/><stop offset="100%" stop-color="#b5105a" stop-opacity="0.22"/></radialGradient>
+            <filter id="b2"><feGaussianBlur stdDeviation="10"/></filter>
+            <filter id="b3"><feGaussianBlur stdDeviation="32"/></filter>
+          </defs>
+          <circle cx="240" cy="240" r="200" fill="url(#g1)" filter="url(#b3)"/>
+          <g class="anim-g" style="animation:float1 6s ease-in-out infinite"><circle cx="260" cy="220" r="120" fill="url(#gC)" opacity=".75"/><ellipse cx="228" cy="184" rx="30" ry="18" fill="rgba(255,255,255,.42)" opacity=".65"/><ellipse cx="244" cy="179" rx="10" ry="6" fill="rgba(255,255,255,.7)"/></g>
+          <g class="anim-g" style="animation:float2 5s ease-in-out infinite .8s"><circle cx="100" cy="180" r="70" fill="url(#g2)" opacity=".85"/><ellipse cx="84" cy="162" rx="16" ry="10" fill="rgba(255,255,255,.38)"/></g>
+          <g class="anim-g" style="animation:float3 7s ease-in-out infinite 1.5s"><circle cx="360" cy="360" r="55" fill="url(#g3)" opacity=".9"/><ellipse cx="347" cy="347" rx="12" ry="7" fill="rgba(255,255,255,.4)"/></g>
+          <g class="anim-g" style="animation:float1 4s ease-in-out infinite 2s"><circle cx="155" cy="360" r="30" fill="rgba(240,24,110,.22)" filter="url(#b2)"/><ellipse cx="148" cy="353" rx="7" ry="4" fill="rgba(255,255,255,.5)"/></g>
+          <g class="anim-g" style="animation:float2 3.5s ease-in-out infinite .3s"><circle cx="380" cy="130" r="20" fill="rgba(255,109,176,.38)" filter="url(#b2)"/><ellipse cx="375" cy="125" rx="5" ry="3" fill="rgba(255,255,255,.6)"/></g>
+          <g class="anim-g" style="animation:pulse-glow 3s ease-in-out infinite"><circle cx="80" cy="310" r="5" fill="rgba(240,24,110,.42)"/><circle cx="420" cy="260" r="4" fill="rgba(240,24,110,.32)"/><circle cx="190" cy="420" r="6" fill="rgba(255,109,176,.42)"/><circle cx="330" cy="80" r="3" fill="rgba(240,24,110,.38)"/></g>
+          <circle cx="260" cy="220" r="145" fill="none" stroke="rgba(240,24,110,.08)" stroke-width="1" stroke-dasharray="4 8"/>
+          <circle cx="240" cy="240" r="190" fill="none" stroke="rgba(240,24,110,.05)" stroke-width="1" stroke-dasharray="2 12"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stats-bar fade-up" style="transition-delay:.2s">
+      <div class="stat-item"><span class="stat-value">3</span><span class="stat-label">Страны</span></div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item"><span class="stat-value">до 2.5 Гбит/с</span><span class="stat-label">Скорость</span></div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item"><span class="stat-value">0</span><span class="stat-label">Логов</span></div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item"><span class="stat-value">VLESS + Reality</span><span class="stat-label">Протокол</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="referrals" id="referrals">
+  <div class="section-inner">
+    <span class="section-label">Реферальная система</span>
+    <h2 class="section-title fade-up">Приглашайте друзей — получайте VLESS на 3 дня</h2>
+    <div class="ref-card fade-up" style="transition-delay:.1s">
+      <div class="ref-rules">
+        <div class="ref-rule">
+          <strong>Бонус за друга</strong>
+          <span>После регистрации и подтверждения почты по вашей ссылке бонус активируется автоматически.</span>
+        </div>
+        <div class="ref-rule">
+          <strong>Бонус другу</strong>
+          <span>Приглашённый пользователь тоже получает VLESS-ключ на 3 дня после подтверждения аккаунта.</span>
+        </div>
+        <div class="ref-rule">
+          <strong>Оплата реферала</strong>
+          <span>Если приглашённый покупает любой тариф, пригласивший получает бонус на 3 дня.</span>
+        </div>
+      </div>
+      <div id="ref-auth-box" class="ref-auth-box">
+        <p class="del-text" style="margin-bottom:14px;">Войдите в аккаунт, чтобы получить персональную реферальную ссылку.</p>
+        <button class="btn-pink" onclick="openModal('login')">Войти</button>
+      </div>
+      <div id="ref-link-box" class="ref-link-box">
+        <span class="con-label">Ваша ссылка</span>
+        <div class="ref-link-row">
+          <label for="ref-link" class="visually-hidden">Реферальная ссылка</label>
+          <input id="ref-link" readonly value="" aria-label="Реферальная ссылка">
+          <button class="btn-pink" onclick="copyReferralLink()">Скопировать</button>
+        </div>
+        <div id="ref-alert" class="alert" role="alert"></div>
+        <div class="ref-stats">
+          <div class="ref-stat"><strong id="ref-total">0</strong><span>приглашено</span></div>
+          <div class="ref-stat"><strong id="ref-signup">0</strong><span>бонусов за регистрацию</span></div>
+          <div class="ref-stat"><strong id="ref-paid">0</strong><span>бонусов за оплату</span></div>
+          <div class="ref-stat"><strong id="ref-blocked">0</strong><span>заблокировано (один IP)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="features-blob" aria-hidden="true"></div>
+  <div class="section-inner">
+    <span class="section-label">Наши преимущества</span>
+    <h2 class="section-title fade-up">Почему выбирают нас</h2>
+    <div class="features-grid">
+      <article class="feature-card fade-up" style="transition-delay:.1s">
+        <span class="feature-icon" aria-hidden="true">🛡️</span>
+        <h3 class="feature-title">VLESS + Reality</h3>
+        <p class="feature-desc">Современный протокол нового поколения — трафик неотличим от обычного HTTPS. Не детектируется провайдерами и системами DPI.</p>
+      </article>
+      <article class="feature-card fade-up" style="transition-delay:.2s">
+        <span class="feature-icon" aria-hidden="true">⚡</span>
+        <h3 class="feature-title">Скорость до 2.5 Гбит/с</h3>
+        <p class="feature-desc">Никаких тормозов. Смотрите 4K, работайте удалённо, играйте онлайн — без задержек и буферизации.</p>
+      </article>
+      <article class="feature-card fade-up" style="transition-delay:.3s">
+        <span class="feature-icon" aria-hidden="true">👁‍🗨</span>
+        <h3 class="feature-title">Без логов</h3>
+        <p class="feature-desc">Политика строгого no-log. Мы не храним записей о вашей активности, трафике или подключениях — технически это невозможно.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="servers" id="servers">
+  <div class="section-inner">
+    <span class="section-label">Инфраструктура</span>
+    <h2 class="section-title fade-up">Наши серверы</h2>
+    <div class="servers-grid">
+      <div class="server-card fade-up" style="transition-delay:.05s">
+        <div class="server-left"><span class="server-flag" aria-label="Германия">🇩🇪</span><div><div class="server-name">Германия — Франкфурт</div><div class="server-region">Europe / DE-FF01</div></div></div>
+        <div class="server-right"><div><div class="sv pg">12 мс</div><div class="sl">Пинг</div></div><div><div class="sv">2.5 Гбит/с</div><div class="sl">Скорость</div></div><span class="ping-badge">Онлайн</span></div>
+      </div>
+      <div class="server-card fade-up" style="transition-delay:.1s">
+        <div class="server-left"><span class="server-flag" aria-label="Польша">🇵🇱</span><div><div class="server-name">Польша — Варшава</div><div class="server-region">Europe / PL-WA01</div></div></div>
+        <div class="server-right"><div><div class="sv pg">15 мс</div><div class="sl">Пинг</div></div><div><div class="sv">1 Гбит/с</div><div class="sl">Скорость</div></div><span class="ping-badge">Онлайн</span></div>
+      </div>
+      <div class="server-card fade-up" style="transition-delay:.15s">
+        <div class="server-left"><span class="server-flag" aria-label="Россия">🇷🇺</span><div><div class="server-name">Россия — Москва</div><div class="server-region">Russia / RU-MO01</div></div></div>
+        <div class="server-right"><div><div class="sv pg">5 мс</div><div class="sl">Пинг</div></div><div><div class="sv">2.5 Гбит/с</div><div class="sl">Скорость</div></div><span class="ping-badge">Онлайн</span></div>
+      </div>
+      <div class="server-card cs fade-up" style="transition-delay:.2s">
+        <div class="server-left"><span class="server-flag" aria-label="Германия">🇩🇪</span><div><div class="server-name">Белая Германия</div><div class="server-region">Europe / DE-FF02 · Чистый IP</div></div></div>
+        <div class="server-right"><span class="soon-badge">Скоро</span></div>
+      </div>
+      <div class="server-card cs fade-up" style="transition-delay:.25s">
+        <div class="server-left"><span class="server-flag" aria-label="Польша">🇵🇱</span><div><div class="server-name">Белая Польша</div><div class="server-region">Europe / PL-WA02 · Чистый IP</div></div></div>
+        <div class="server-right"><span class="soon-badge">Скоро</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="section-inner">
+    <span class="section-label">Тарифные планы</span>
+    <h2 class="section-title fade-up">Один тариф — выберите период</h2>
+    <div class="pricing-plans-grid">
+      <div class="plan-card fade-up" style="transition-delay:.1s">
+        <div class="plan-period">1 месяц</div>
+        <div class="plan-price">89₽</div>
+        <div class="plan-per">в месяц</div>
+        <div class="plan-total">89₽ итого</div>
+        <span class="plan-save inv" aria-hidden="true">—</span>
+        <button class="btn-plan-buy" onclick="startPayment('1m')" aria-label="Купить подписку на 1 месяц за 89₽">Купить</button>
+      </div>
+      <div class="plan-card fade-up" style="transition-delay:.15s">
+        <div class="plan-period">3 месяца</div>
+        <div class="plan-price">83₽</div>
+        <div class="plan-per">в месяц</div>
+        <div class="plan-total">249₽ итого</div>
+        <span class="plan-save">−15%</span>
+        <button class="btn-plan-buy" onclick="startPayment('3m')" aria-label="Купить подписку на 3 месяца за 249₽">Купить</button>
+      </div>
+      <div class="plan-card fade-up" style="transition-delay:.2s">
+        <div class="plan-period">6 месяцев</div>
+        <div class="plan-price">79₽</div>
+        <div class="plan-per">в месяц</div>
+        <div class="plan-total">474₽ итого</div>
+        <span class="plan-save">−23%</span>
+        <button class="btn-plan-buy" onclick="startPayment('6m')" aria-label="Купить подписку на 6 месяцев за 474₽">Купить</button>
+      </div>
+      <div class="plan-card best fade-up" style="transition-delay:.25s">
+        <div class="best-badge">★ Выгоднее всего</div>
+        <div class="plan-period">1 год</div>
+        <div class="plan-price">75₽</div>
+        <div class="plan-per">в месяц</div>
+        <div class="plan-total">900₽ итого</div>
+        <span class="plan-save">−42%</span>
+        <button class="btn-plan-buy bb" onclick="startPayment('12m')" aria-label="Купить подписку на 1 год за 900₽ — выгоднее всего">Купить сейчас</button>
+      </div>
+    </div>
+    <div class="pricing-inc fade-up" style="transition-delay:.3s">
+      <div class="pricing-inc-title">Включено во все планы</div>
+      <ul class="pricing-inc-list">
+        <li>До 3 устройств одновременно</li>
+        <li>Все серверы (DE, PL, RU)</li>
+        <li>Протокол VLESS + Reality</li>
+        <li>Без логов и слежки</li>
+        <li>Поддержка в Telegram</li>
+        <li>Мгновенная выдача конфига</li>
+      </ul>
+    </div>
+    <div class="pricing-refund-note">
+      Цифровая услуга. Возврат возможен в течение 7 дней при использовании менее 1 ГБ трафика. Подробнее — в <a href="#return-policy" style="color:rgba(255,255,255,0.5);">условиях возврата</a>.
+    </div>
+  </div>
+</section>
+
+<section class="delivery" id="delivery">
+  <div class="section-inner">
+    <span class="section-label">Условия оказания услуги</span>
+    <h2 class="section-title fade-up">Как получить доступ</h2>
+    <div class="delivery-grid">
+      <div class="del-card fade-up" style="transition-delay:.1s">
+        <span class="del-icon" aria-hidden="true">📦</span>
+        <div class="del-title">Способ доставки</div>
+        <p class="del-text">Цифровой товар. После оплаты конфигурационный файл и инструкция отправляются автоматически через бота <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a>. Никаких физических отправлений нет.</p>
+      </div>
+      <div class="del-card fade-up" style="transition-delay:.15s">
+        <span class="del-icon" aria-hidden="true">⏱️</span>
+        <div class="del-title">Срок и стоимость</div>
+        <p class="del-text">Мгновенно — в течение нескольких секунд после подтверждения платежа. Доступно круглосуточно, без выходных. Стоимость доставки: <strong>0 ₽</strong>.</p>
+      </div>
+      <div class="del-card fade-up" style="transition-delay:.2s">
+        <span class="del-icon" aria-hidden="true">🌍</span>
+        <div class="del-title">Регион предоставления</div>
+        <p class="del-text">Услуга доступна по всей России и за рубежом. Стоимость одинакова для всех регионов. Региональных ограничений нет.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="return-policy" id="return-policy">
+  <div class="section-inner">
+    <span class="section-label">Условия возврата</span>
+    <h2 class="section-title fade-up">Возврат и отмена платежа</h2>
+    <div class="return-grid fade-up" style="transition-delay:.1s">
+      <div class="ret-card yes">
+        <div class="ret-title">✅ Когда возврат возможен</div>
+        <ul>
+          <li>Обращение в течение 7 дней с момента оплаты</li>
+          <li>Использовано менее 1 ГБ трафика</li>
+          <li>Первичное обращение (не повторный возврат)</li>
+          <li>Технические неполадки по вине сервиса</li>
+        </ul>
+      </div>
+      <div class="ret-card no">
+        <div class="ret-title">❌ Когда возврат невозможен</div>
+        <ul>
+          <li>Прошло более 7 дней с момента оплаты</li>
+          <li>Использовано более 1 ГБ трафика</li>
+          <li>Повторный запрос на возврат</li>
+          <li>Нарушение условий использования сервиса</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ret-contact fade-up" style="transition-delay:.2s">
+      Для оформления возврата напишите на <strong>support@zephyrion.ru</strong> или в бот <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a> с темой «Возврат» и номером заказа. Запрос рассматривается в течение 24–72 часов. В случае одобрения, деньги возвращаются на ту же карту в течение 5–10 календарных дней.
+    </div>
+  </div>
+</section>
+
+<section class="contacts" id="contacts">
+  <div class="section-inner">
+    <span class="section-label">Реквизиты и контакты</span>
+    <h2 class="section-title fade-up">Связаться с нами</h2>
+    <div class="contacts-grid">
+      <div class="con-card fade-up" style="transition-delay:.1s">
+        <span class="con-label">Email поддержки</span>
+        <a href="mailto:support@zephyrion.ru" class="con-value">support@zephyrion.ru</a>
+        <div class="con-note">Ответ в течение 24 часов</div>
+      </div>
+      <div class="con-card fade-up" style="transition-delay:.15s">
+        <span class="con-label">Telegram-бот</span>
+        <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer" class="con-value">@ZephyrionVPN_bot</a>
+        <div class="con-note">Покупка, поддержка, конфиги</div>
+      </div>
+      <div class="con-card fade-up" style="transition-delay:.2s">
+        <span class="con-label">Telegram-канал</span>
+        <a href="https://t.me/ZephyrionVPN" target="_blank" rel="noopener noreferrer" class="con-value">@ZephyrionVPN</a>
+        <div class="con-note">Новости и обновления</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="section-inner">
+    <span class="section-label">Вопросы и ответы</span>
+    <h2 class="section-title fade-up" style="text-align:center;">Частые вопросы</h2>
+    <div class="faq-list">
+      <div class="faq-item fade-up" style="transition-delay:.05s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Как подключиться к ZephyrionVPN?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">Нажмите «Подключиться», оплатите выбранный период — и наш бот <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a> автоматически пришлёт конфигурационный файл и инструкцию. Импорт занимает меньше 2 минут. Поддерживаются Windows, macOS, iOS, Android и Linux.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.1s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Что такое VLESS + Reality?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">VLESS + Reality — протокол нового поколения для обхода цензуры. Трафик выглядит как обычный HTTPS к легальному сайту. Системы DPI и блокировки провайдеров не определяют его как VPN.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.15s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Храните ли вы логи моей активности?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">Нет. Мы не записываем IP-адреса, время подключений, DNS-запросы или любую другую информацию о вашей активности. Это закреплено технически — хранить такие данные физически невозможно.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.2s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">На скольких устройствах можно использовать?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">До 3 устройств одновременно на любом тарифе. Один конфиг — три одновременных подключения: телефон, ноутбук и домашний компьютер.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.25s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Как получить конфигурацию после оплаты?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">После подтверждения платежа бот <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a> автоматически пришлёт вам конфигурационный файл и пошаговую инструкцию по подключению. Это занимает несколько секунд.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.3s">
+        <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">Как оформить возврат?<span class="faq-icon" aria-hidden="true">+</span></button>
+        <div class="faq-a">Напишите на <a href="mailto:support@zephyrion.ru">support@zephyrion.ru</a> или в бот <a href="https://t.me/ZephyrionVPN_bot" target="_blank" rel="noopener noreferrer">@ZephyrionVPN_bot</a> с темой «Возврат» и номером заказа в течение 7 дней с момента оплаты. Условие: использовано менее 1 ГБ трафика. Запрос рассматривается в течение 24–72 часов.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo" aria-label="ZephyrionVPN — на главную">ZEPHYRION<span style="color:var(--pink-soft)" aria-hidden="true">·</span></a>
+        <p>VPN нового поколения на базе VLESS + Reality. Невидим. Быстро. Без лишнего.</p>
+        <div class="legal-note">
+          Самозанятый<br>
+          ИНН 503411576060<br>
+          support@zephyrion.ru
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Продукт</h4>
+        <ul>
+          <li><a href="#features">Возможности</a></li>
+          <li><a href="#servers">Серверы</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Информация</h4>
+        <ul>
+          <li><a href="#delivery">Условия доставки</a></li>
+          <li><a href="#return-policy">Возврат и отмена</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Юридическое</h4>
+        <ul>
+          <li><a onclick="openModal('offer')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')openModal('offer')">Публичная оферта</a></li>
+          <li><a onclick="openModal('policy')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')openModal('policy')">Политика конфид.</a></li>
+          <li><a href="https://t.me/ZephyrionVPN" target="_blank" rel="noopener noreferrer">Telegram-канал</a></li>
+          <li><a href="mailto:support@zephyrion.ru">support@zephyrion.ru</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ZephyrionVPN. Самозанятый · ИНН 503411576060</p>
+      <p>
+        <a onclick="openModal('offer')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')openModal('offer')">Оферта</a> ·
+        <a onclick="openModal('policy')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')openModal('policy')">Конфиденциальность</a> ·
+        <a href="#return-policy">Возврат</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── MODALS ─── -->
+
+<div class="modal-overlay" id="modal-profile" role="dialog" aria-modal="true" aria-labelledby="modal-profile-title">
+  <div class="modal" style="max-width:480px;">
+    <button class="modal-close" onclick="closeModal('profile')" aria-label="Закрыть">✕</button>
+    <div class="modal-body">
+      <h2 id="modal-profile-title">Мой профиль</h2>
+      <p class="msub" id="profile-email"></p>
+      <div id="profile-active-block" style="display:none;">
+        <div class="profile-sub-block">
+          <div class="profile-sub-header">
+            <span class="profile-sub-label">Активная подписка</span>
+            <span class="sub-badge" id="profile-plan-badge"></span>
+          </div>
+          <div class="profile-expires-row">Действует до: <strong id="profile-expires"></strong></div>
+        </div>
+        <div class="profile-url-block">
+          <div class="profile-url-label">Ссылка на подписку</div>
+          <div class="profile-url-row">
+            <label for="profile-sub-url" style="display:none;">Ссылка подписки</label>
+            <input id="profile-sub-url" readonly aria-label="Ссылка на подписку" value="">
+            <button class="btn-pink" onclick="copySubUrl()" style="white-space:nowrap;padding:10px 16px;font-size:13px;">Скопировать</button>
+          </div>
+          <div id="profile-copy-alert" class="alert" role="alert" style="margin-top:8px;"></div>
+        </div>
+        <button class="btn-pink" style="width:100%;margin-bottom:10px;" onclick="closeModal('profile');startPayment('1m')">Продлить подписку</button>
+      </div>
+      <div id="profile-inactive-block" style="display:none;">
+        <div class="profile-inactive-block">
+          <div class="profile-inactive-icon" aria-hidden="true">🔒</div>
+          <div class="profile-inactive-title">Подписка не активна</div>
+          <div class="profile-inactive-sub">Оформите подписку, чтобы получить доступ к VPN</div>
+        </div>
+        <button class="btn-pink" style="width:100%;margin-bottom:10px;" onclick="closeModal('profile');startPayment('1m')">Купить подписку</button>
+      </div>
+      <button class="btn-ghost" style="width:100%;text-align:center;" onclick="doLogout();closeModal('profile')">Выйти из аккаунта</button>
+    </div>
+  </div>
+</div>
+
+<!-- Регистрация встроена в modal-login выше -->
+
+<div class="modal-overlay" id="modal-login" role="dialog" aria-modal="true" aria-labelledby="modal-login-title">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')" aria-label="Закрыть">✕</button>
+    <div class="modal-body">
+      <h2 id="modal-login-title">Добро пожаловать</h2>
+      <!-- FIX: комбинированная модалка — вход и регистрация в одном окне -->
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" role="tab" aria-selected="true"
+                aria-controls="auth-panel-login" id="tab-login"
+                onclick="switchAuthTab('login')">Войти</button>
+        <button class="auth-tab" role="tab" aria-selected="false"
+                aria-controls="auth-panel-reg" id="tab-reg"
+                onclick="switchAuthTab('reg')">Зарегистрироваться</button>
+      </div>
+
+      <!-- Вкладка: Вход -->
+      <div class="auth-panel active" id="auth-panel-login" role="tabpanel" aria-labelledby="tab-login">
+        <div id="login-alert" class="alert" role="alert"></div>
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Пароль</label>
+          <input type="password" id="login-password" placeholder="Ваш пароль" autocomplete="current-password">
+        </div>
+        <button class="btn-submit" id="btn-login" onclick="doLogin()">Войти</button>
+      </div>
+
+      <!-- Вкладка: Регистрация -->
+      <div class="auth-panel" id="auth-panel-reg" role="tabpanel" aria-labelledby="tab-reg">
+        <div id="reg-alert" class="alert" role="alert"></div>
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" inputmode="email">
+          <div class="form-hint">Проверим формат и существование домена почты.</div>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Пароль</label>
+          <input type="password" id="reg-password" placeholder="Минимум 8 символов" autocomplete="new-password">
+        </div>
+        <button class="btn-submit" id="btn-register" onclick="doRegister()">Создать аккаунт</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-payment" role="dialog" aria-modal="true" aria-labelledby="modal-payment-title">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('payment')" aria-label="Закрыть">✕</button>
+    <div class="modal-body">
+      <h2 id="modal-payment-title">Оплата подписки</h2>
+      <p class="msub" id="pay-desc">Выберите способ оплаты</p>
+      <div id="payment-alert" class="alert" role="alert"></div>
+      <div class="pay-options">
+        <button class="pay-btn lava" id="btn-lava" onclick="doLavaPayment()">💳 Оплатить картой / СБП</button>
+      </div>
+      <p class="pay-legal">
+        Нажимая «Оплатить», вы принимаете условия<br>
+        <a onclick="closeModal('payment');openModal('offer')">Публичной оферты</a> и
+        <a onclick="closeModal('payment');openModal('policy')">Политики конфиденциальности</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-offer" role="dialog" aria-modal="true" aria-labelledby="modal-offer-title">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeModal('offer')" aria-label="Закрыть">✕</button>
+    <div class="modal-body">
+      <h2 id="modal-offer-title">Публичная оферта</h2>
+      <p class="msub">Договор на оказание услуг доступа к сервису ZephyrionVPN</p>
+      <div class="modal-scroll">
+        <p>Настоящий документ является официальной публичной офертой Самозанятого, ИНН 503411576060 (далее — «Исполнитель»), о заключении договора на оказание услуг доступа к интернет-сервису ZephyrionVPN с любым лицом (далее — «Заказчик»), принявшим условия настоящей оферты.</p>
+        <h3>1. Предмет договора</h3>
+        <p>1.1. Исполнитель предоставляет Заказчику доступ к сервису ZephyrionVPN на базе протокола VLESS + Reality на срок оплаченной подписки.</p>
+        <p>1.2. Услуга является цифровым продуктом — программным обеспечением и инфраструктурой, разработанными и эксплуатируемыми Исполнителем самостоятельно. Исполнитель является правообладателем конфигураций, программных решений и инфраструктуры сервиса ZephyrionVPN.</p>
+        <h3>2. Способ и срок оказания услуги</h3>
+        <p>2.1. Услуга предоставляется в цифровом виде. После подтверждения оплаты Заказчику автоматически направляется конфигурационный файл через Telegram-бот @ZephyrionVPN_bot.</p>
+        <p>2.2. Срок доставки — не позднее 10 минут с момента подтверждения платежа. В большинстве случаев — мгновенно. Стоимость доставки: 0 ₽. Услуга доступна по всей России и за рубежом.</p>
+        <h3>3. Стоимость и порядок оплаты</h3>
+        <p>3.1. Оплата производится на условиях 100% предоплаты: 1 месяц — 89 ₽, 3 месяца — 249 ₽, 6 месяцев — 474 ₽, 12 месяцев — 900 ₽. Все цены в рублях РФ.</p>
+        <p>3.2. Оплата производится через платёжные системы, доступные на сайте (банковская карта, СБП). Приём платежей осуществляется через платёжный сервис Lava.ru.</p>
+        <h3>4. Условия возврата и отмены платежа</h3>
+        <p>4.1. Заказчик вправе запросить возврат средств в течение 7 (семи) календарных дней с момента оплаты при одновременном соблюдении условий: объём использованного трафика не превысил 1 ГБ, и Заказчик не подавал ранее заявку на возврат.</p>
+        <p>4.2. По истечении 7 дней возврат средств не производится.</p>
+        <p>4.3. Для оформления возврата необходимо направить обращение на адрес support@zephyrion.ru или в Telegram-бот @ZephyrionVPN_bot с указанием темы «Возврат» и номера заказа. Запрос рассматривается в течение 24–72 часов.</p>
+        <h3>5. Права на интеллектуальную собственность</h3>
+        <p>5.1. Все права на сервис ZephyrionVPN принадлежат Исполнителю. Заказчику предоставляется ограниченная непередаваемая лицензия на использование сервиса исключительно в личных некоммерческих целях.</p>
+        <h3>6. Ответственность сторон</h3>
+        <p>6.1. Исполнитель не несёт ответственности за действия третьих лиц, временную недоступность серверов по независящим от Исполнителя причинам, а также за блокировки со стороны интернет-провайдеров.</p>
+        <h3>7. Акцепт оферты</h3>
+        <p>7.1. Акцептом настоящей оферты является факт оплаты услуг, регистрации аккаунта или начала использования сервиса.</p>
+        <h3>8. Реквизиты исполнителя</h3>
+        <p>Самозанятый · ИНН: 503411576060<br>Email: support@zephyrion.ru · Telegram: @ZephyrionVPN_bot</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-policy" role="dialog" aria-modal="true" aria-labelledby="modal-policy-title">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeModal('policy')" aria-label="Закрыть">✕</button>
+    <div class="modal-body">
+      <h2 id="modal-policy-title">Политика конфиденциальности</h2>
+      <p class="msub">Как ZephyrionVPN обрабатывает ваши персональные данные</p>
+      <div class="modal-scroll">
+        <p>Оператором персональных данных является Самозанятый, ИНН 503411576060. Настоящая политика действует в соответствии с Федеральным законом № 152-ФЗ «О персональных данных».</p>
+        <h3>1. Какие данные мы собираем</h3>
+        <p><strong>Собираем:</strong> email-адрес (при регистрации на сайте), Telegram ID (при использовании бота), дату оплаты и срок действия подписки. Платёжные данные обрабатываются исключительно платёжным провайдером Lava.ru.</p>
+        <p><strong>Не собираем:</strong> IP-адреса подключений к VPN, DNS-запросы, историю посещённых сайтов, время и длительность сессий. Ваша интернет-активность нам технически недоступна.</p>
+        <h3>2. Цели обработки персональных данных</h3>
+        <p>Данные используются для: идентификации пользователя в системе, выдачи конфигурационного файла, управления подпиской, ответов на обращения в службу поддержки.</p>
+        <h3>3. Правовое основание</h3>
+        <p>Обработка персональных данных осуществляется на основании согласия субъекта (ст. 6 ФЗ-152) и в целях исполнения договора оферты.</p>
+        <h3>4. Передача данных третьим лицам</h3>
+        <p>Мы не продаём и не передаём персональные данные третьим лицам, за исключением случаев, прямо предусмотренных законодательством РФ.</p>
+        <h3>5. Файлы cookie</h3>
+        <p>Сайт использует только технические cookies, необходимые для авторизации. Рекламные и аналитические трекеры отсутствуют.</p>
+        <h3>6. Хранение и защита данных</h3>
+        <p>Данные хранятся на защищённых серверах. Срок хранения — период действия подписки плюс 1 год. По запросу данные могут быть удалены досрочно.</p>
+        <h3>7. Ваши права</h3>
+        <p>Вы вправе запросить доступ, исправление или удаление своих персональных данных, написав на support@zephyrion.ru. Срок обработки — 30 дней.</p>
+        <h3>8. Контакты оператора</h3>
+        <p>support@zephyrion.ru</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- old script removed -->
+
+<script>
+  // ─── CONFIG ───
+  const API_BASE = 'https://zephyrion.ru/api';
+  const TOKEN_KEY = 'zeph_token';
+  // FIX: добавляем ключ для refresh_token
+  const REFRESH_KEY = 'zeph_refresh';
+  const REF_KEY = 'zeph_ref';
+  const REF_CLIENT_KEY = 'zeph_ref_client';
+
+  const PLANS = {
+    '1m':  { label: '1 месяц · 89 ₽',     sum: 89  },
+    '3m':  { label: '3 месяца · 249 ₽',   sum: 249  },
+    '6m':  { label: '6 месяцев · 474 ₽',  sum: 474  },
+    '12m': { label: '12 месяцев · 900 ₽', sum: 900  }
+  };
+
+  let currentPlan = '1m';
+  let currentReferralCode = '';
+  let currentUser = null;
+  let currentSub = null;
+  let isPaymentPending = false;
+
+  // FIX: флаг и промис для одного refresh-запроса на всех параллельных 401
+  let isRefreshing = false;
+  let refreshPromise = null;
+
+  // ─── REFERRAL CLIENT ID ───
+  function getReferralClientId() {
+    let id = localStorage.getItem(REF_CLIENT_KEY);
+    if (!id) {
+      const bytes = new Uint8Array(16);
+      if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(bytes);
+        id = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+      } else {
+        id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+      }
+      localStorage.setItem(REF_CLIENT_KEY, id);
+    }
+    return id;
+  }
+
+  // ─── TELEGRAM MINI APP ───
+  const tg = window.Telegram?.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+
+  async function doTgAuth() {
+    if (!tg || !tg.initData) return false;
+    try {
+      const { ok, data } = await apiFetch('/auth/telegram', {
+        method: 'POST',
+        body: JSON.stringify({
+          init_data: tg.initData,
+          referral_code: getStoredReferralCode(),
+          client_referral_id: getReferralClientId()
+        })
+      });
+      if (ok && data.access_token) {
+        // FIX: сохраняем оба токена
+        setTokens(data.access_token, data.refresh_token || null);
+        await loadUserData();
+        return true;
+      }
+      return false;
+    } catch { return false; }
+  }
+
+  // ─── FOCUS TRAP ───
+  function trapFocus(overlayEl) {
+    const modal = overlayEl.querySelector('.modal');
+    if (!modal) return;
+    const focusable = modal.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    setTimeout(() => first.focus(), 50);
+    function handler(e) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    overlayEl._trapHandler = handler;
+    overlayEl.addEventListener('keydown', handler);
+  }
+
+  function releaseFocus(overlayEl) {
+    if (overlayEl._trapHandler) {
+      overlayEl.removeEventListener('keydown', overlayEl._trapHandler);
+      delete overlayEl._trapHandler;
+    }
+  }
+
+  // ─── MODALS ───
+  function openModal(id) {
+    const overlay = document.getElementById('modal-' + id);
+    if (!overlay) return;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    trapFocus(overlay);
+  }
+
+  function closeModal(id) {
+    const overlay = document.getElementById('modal-' + id);
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    releaseFocus(overlay);
+    if (!document.querySelector('.modal-overlay.open')) {
+      document.body.style.overflow = '';
+    }
+    const a = document.getElementById(id + '-alert');
+    if (a) { a.className = 'alert'; a.textContent = ''; }
+  }
+
+  function switchModal(f, t) { closeModal(f); setTimeout(() => openModal(t), 180); }
+
+  // FIX: закрытие по клику на оверлей только если mousedown начался НА оверлее,
+  // а не внутри модалки — drag outside не закрывает окно
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    let mousedownOnOverlay = false;
+    o.addEventListener('mousedown', function(e) {
+      mousedownOnOverlay = (e.target === this);
+    });
+    o.addEventListener('click', function(e) {
+      if (mousedownOnOverlay && e.target === this) {
+        closeModal(this.id.replace('modal-', ''));
+      }
+      mousedownOnOverlay = false;
+    });
+    // Touch: тот же принцип
+    o.addEventListener('touchstart', function(e) {
+      mousedownOnOverlay = (e.target === this);
+    }, { passive: true });
+  });
+
+  // Закрытие по Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    const openOverlay = document.querySelector('.modal-overlay.open');
+    if (openOverlay) closeModal(openOverlay.id.replace('modal-', ''));
+  });
+
+  // ─── AUTH TABS (комбинированная модалка вход/регистрация) ───
+  // FIX: переключение вкладок внутри одной модалки «Добро пожаловать»
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(btn => {
+      const isActive = btn.id === 'tab-' + tab;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-selected', String(isActive));
+    });
+    document.querySelectorAll('.auth-panel').forEach(panel => {
+      panel.classList.toggle('active', panel.id === 'auth-panel-' + tab);
+    });
+    // Сбрасываем алерты при переключении
+    ['login-alert', 'reg-alert'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.className = 'alert'; el.textContent = ''; }
+    });
+  }
+
+  // FIX: openModal('register') → открываем login-модалку на вкладке «Регистрация»
+  function openRegisterModal() {
+    openModal('login');
+    setTimeout(() => switchAuthTab('reg'), 50);
+  }
+
+  // ─── MOBILE MENU ───
+  let menuOpen = false;
+
+  function toggleMenu() {
+    menuOpen = !menuOpen;
+    document.getElementById('mobile-menu').classList.toggle('open', menuOpen);
+    document.getElementById('mobile-overlay').classList.toggle('open', menuOpen);
+    const btn = document.getElementById('hamburger-btn');
+    btn.classList.toggle('active', menuOpen);
+    btn.setAttribute('aria-expanded', String(menuOpen));
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+  }
+
+  function closeMenu() {
+    menuOpen = false;
+    ['mobile-menu', 'mobile-overlay'].forEach(id => document.getElementById(id).classList.remove('open'));
+    const btn = document.getElementById('hamburger-btn');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  // ─── API HELPERS ───
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function getRefreshToken() { return localStorage.getItem(REFRESH_KEY); }
+
+  // FIX: сохраняем оба токена
+  function setTokens(access, refresh) {
+    if (access) localStorage.setItem(TOKEN_KEY, access);
+    if (refresh) localStorage.setItem(REFRESH_KEY, refresh);
+  }
+  function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+
+  // FIX: удаляем оба токена при логауте
+  function removeToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+  }
+
+  function normalizeReferralCode(code) {
+    return (code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 32);
+  }
+
+  function getStoredReferralCode() {
+    return normalizeReferralCode(localStorage.getItem(REF_KEY) || currentReferralCode);
+  }
+
+  // FIX: функция обновления токена с защитой от параллельных вызовов
+  async function tryRefreshToken() {
+    // Если уже идёт refresh — возвращаем тот же промис (все ждут одного результата)
+    if (isRefreshing) return refreshPromise;
+
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return false;
+
+    isRefreshing = true;
+    // FIX: единый промис — параллельные 401 ждут его и не создают второй запрос
+    refreshPromise = (async () => {
+      try {
+        const res = await fetch(API_BASE + '/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}));
+          if (data.access_token) {
+            // FIX: сохраняем новые токены (rotation: бэкенд может вернуть новый refresh)
+            setTokens(data.access_token, data.refresh_token || refreshToken);
+            return true;
+          }
+        }
+        // FIX: 401/403 или сеть → удаляем оба токена, выходим
+        removeToken();
+        doLogout();
+        return false;
+      } catch {
+        removeToken();
+        doLogout();
+        return false;
+      } finally {
+        isRefreshing = false;
+        refreshPromise = null;
+      }
+    })();
+
+    return refreshPromise;
+  }
+
+  // FIX: apiFetch с интерцептором 401 → refresh → повтор запроса
+  async function apiFetch(endpoint, opts = {}) {
+    const t = getToken();
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    if (t) headers['Authorization'] = 'Bearer ' + t;
+
+    const res = await fetch(API_BASE + endpoint, { ...opts, headers });
+
+    // FIX: перехватываем 401, но НЕ для /auth/refresh (избегаем бесконечной рекурсии)
+    if (res.status === 401 && !endpoint.includes('/auth/refresh')) {
+      const refreshed = await tryRefreshToken();
+      if (refreshed) {
+        // FIX: повторяем исходный запрос с обновлённым токеном
+        const newToken = getToken();
+        const newHeaders = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+        if (newToken) newHeaders['Authorization'] = 'Bearer ' + newToken;
+        const retryRes = await fetch(API_BASE + endpoint, { ...opts, headers: newHeaders });
+        const retryData = await retryRes.json().catch(() => ({}));
+        return { ok: retryRes.ok, status: retryRes.status, data: retryData };
+      }
+      // refresh провалился — возвращаем исходный 401 без повторной попытки
+      const data = await res.json().catch(() => ({}));
+      return { ok: false, status: 401, data };
+    }
+
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  function showAlert(id, type, msg) {
+    const el = document.getElementById(id + '-alert');
+    if (!el) return;
+    el.className = 'alert ' + type;
+    el.textContent = msg;
+  }
+
+  function normalizeEmail(value) { return value.trim().toLowerCase(); }
+
+  function getEmailValidationError(email) {
+    const blockedDomains = new Set(['example.com', 'example.net', 'example.org', 'test.com', 'localhost']);
+    const basicEmailRe = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!email) return 'Введите email';
+    if (!basicEmailRe.test(email) || email.includes('..')) return 'Введите корректный email';
+    const [localPart, domain] = email.split('@');
+    if (!localPart || localPart.length > 64 || email.length > 254) return 'Введите корректный email';
+    if (blockedDomains.has(domain) || domain.endsWith('.local')) return 'Введите действующий email';
+    return '';
+  }
+
+  // ─── AUTH ───
+  async function doRegister() {
+    const btn = document.getElementById('btn-register');
+    const email = normalizeEmail(document.getElementById('reg-email').value);
+    const password = document.getElementById('reg-password').value;
+    const emailError = getEmailValidationError(email);
+    if (!email || !password) return showAlert('reg', 'error', 'Заполните все поля');
+    if (emailError) return showAlert('reg', 'error', emailError);
+    if (password.length < 8) return showAlert('reg', 'error', 'Пароль минимум 8 символов');
+    btn.disabled = true; btn.textContent = 'Создаём аккаунт...';
+    try {
+      const { ok, data } = await apiFetch('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          email, password,
+          referral_code: getStoredReferralCode(),
+          client_referral_id: getReferralClientId()
+        })
+      });
+      if (ok) {
+        showAlert('reg', 'success', data.message || 'Письмо подтверждения отправлено. Проверьте почту.');
+        document.getElementById('reg-password').value = '';
+        // FIX: если бэкенд сразу вернул токены после регистрации — авторизуем
+        if (data.access_token) {
+          setTokens(data.access_token, data.refresh_token || null);
+          setTimeout(async () => {
+            closeModal('login');
+            await loadUserData();
+            openProfileModal(currentSub);
+          }, 1500);
+        }
+      } else {
+        showAlert('reg', 'error', data.detail || data.message || 'Ошибка регистрации');
+      }
+    } catch { showAlert('reg', 'error', 'Ошибка сети. Попробуйте позже.'); }
+    finally { btn.disabled = false; btn.textContent = 'Создать аккаунт'; }
+  }
+
+  async function doLogin() {
+    const btn = document.getElementById('btn-login');
+    const email = normalizeEmail(document.getElementById('login-email').value);
+    const password = document.getElementById('login-password').value;
+    const emailError = getEmailValidationError(email);
+    if (!email || !password) return showAlert('login', 'error', 'Заполните все поля');
+    if (emailError) return showAlert('login', 'error', emailError);
+    btn.disabled = true; btn.textContent = 'Входим...';
+    try {
+      const { ok, data } = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+      if (ok && data.access_token) {
+        // FIX: сохраняем оба токена
+        setTokens(data.access_token, data.refresh_token || null);
+        closeModal('login');
+        await loadUserData();
+        // FIX: если пользователь пришёл из startPayment → открываем оплату после логина
+        if (currentPlan) {
+          openModal('payment');
+          const plan = PLANS[currentPlan] || PLANS['1m'];
+          const desc = document.getElementById('pay-desc');
+          if (desc) {
+            desc.textContent = '';
+            const text = document.createTextNode('Тариф: ');
+            const strong = document.createElement('strong');
+            strong.textContent = plan.label;
+            desc.appendChild(text);
+            desc.appendChild(strong);
+          }
+          const a = document.getElementById('payment-alert');
+          if (a) { a.className = 'alert'; a.textContent = ''; }
+          const btn2 = document.getElementById('btn-lava');
+          if (btn2) { btn2.disabled = false; btn2.textContent = '💳 Оплатить картой / СБП'; }
+          isPaymentPending = false;
+        } else {
+          openProfileModal(currentSub);
+        }
+      } else {
+        showAlert('login', 'error', data.detail || data.message || 'Неверный email или пароль');
+      }
+    } catch { showAlert('login', 'error', 'Ошибка сети. Попробуйте позже.'); }
+    finally { btn.disabled = false; btn.textContent = 'Войти'; }
+  }
+
+  // ─── PROFILE MODAL ───
+  function openProfileModal(sub) {
+    const emailEl = document.getElementById('profile-email');
+    emailEl.textContent = currentUser?.email || currentUser?.tg_username || '';
+
+    const activeBlock = document.getElementById('profile-active-block');
+    const inactiveBlock = document.getElementById('profile-inactive-block');
+    if (sub && sub.active) {
+      activeBlock.style.display = 'block';
+      inactiveBlock.style.display = 'none';
+      document.getElementById('profile-plan-badge').textContent = sub.plan_name || '';
+      document.getElementById('profile-expires').textContent =
+        sub.expires_at ? new Date(sub.expires_at).toLocaleDateString('ru-RU') : '—';
+      document.getElementById('profile-sub-url').value = sub.subscription_url || '';
+    } else {
+      activeBlock.style.display = 'none';
+      inactiveBlock.style.display = 'block';
+    }
+    openModal('profile');
+  }
+
+  async function copyText(text, alertId, successMsg) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showAlert(alertId, 'success', successMsg);
+    } catch {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showAlert(alertId, 'success', successMsg);
+      } catch {
+        showAlert(alertId, 'error', 'Не удалось скопировать. Скопируйте вручную.');
+      }
+    }
+  }
+
+  async function copySubUrl() {
+    const val = document.getElementById('profile-sub-url').value;
+    if (!val) return;
+    await copyText(val, 'profile-copy', 'Скопировано!');
+  }
+
+  async function copyReferralLink() {
+    const val = document.getElementById('ref-link').value;
+    if (!val) return;
+    await copyText(val, 'ref', 'Реферальная ссылка скопирована');
+  }
+
+  // FIX: doLogout удаляет оба токена
+  function doLogout() {
+    removeToken();
+    currentUser = null; currentSub = null;
+    updateNavState(null, null);
+  }
+
+  function captureReferralCode() {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = normalizeReferralCode(params.get('ref') || params.get('start') || '');
+    if (fromQuery) {
+      currentReferralCode = fromQuery;
+      localStorage.setItem(REF_KEY, fromQuery);
+    } else {
+      currentReferralCode = getStoredReferralCode();
+    }
+    if (fromQuery && params.get('email_verified') !== '1') {
+      params.delete('ref'); params.delete('start');
+      const query = params.toString();
+      history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + window.location.hash);
+    }
+  }
+
+  async function loadUserData() {
+    if (!getToken()) return false;
+    try {
+      const { ok, status, data } = await apiFetch('/user/me');
+      if (ok) {
+        currentUser = data;
+        const sub = await loadSubscription();
+        currentSub = sub;
+        updateNavState(data, sub);
+        return true;
+      } else if (status === 401) {
+        removeToken();
+        if (tg && tg.initData) return await doTgAuth();
+      } else {
+        removeToken();
+      }
+    } catch { removeToken(); }
+    return false;
+  }
+
+  async function loadSubscription() {
+    try {
+      const { ok, data } = await apiFetch('/user/subscription');
+      return ok ? data : null;
+    } catch { return null; }
+  }
+
+  async function loadReferralData() {
+    const authBox = document.getElementById('ref-auth-box');
+    const linkBox = document.getElementById('ref-link-box');
+    if (!authBox || !linkBox) return;
+    if (!getToken()) {
+      authBox.style.display = 'block'; linkBox.style.display = 'none'; return;
+    }
+    try {
+      const { ok, data } = await apiFetch('/user/referrals');
+      if (!ok) throw new Error('referrals failed');
+      authBox.style.display = 'none'; linkBox.style.display = 'block';
+      document.getElementById('ref-link').value = data.link || '';
+      document.getElementById('ref-total').textContent = data.total ?? 0;
+      document.getElementById('ref-signup').textContent = data.signup_granted ?? 0;
+      document.getElementById('ref-paid').textContent = data.paid_granted ?? 0;
+      const blocked = document.getElementById('ref-blocked');
+      if (blocked) blocked.textContent = data.same_ip_blocked ?? 0;
+    } catch {
+      authBox.style.display = 'block'; linkBox.style.display = 'none';
+    }
+  }
+
+  function updateNavState(user, sub) {
+    const out = document.getElementById('nav-auth-out');
+    const inn = document.getElementById('nav-auth-in');
+    if (user) {
+      out.style.display = 'none'; inn.classList.add('visible');
+      document.getElementById('nav-username').textContent = user.tg_username || user.email || 'Профиль';
+      document.getElementById('nav-sub-badge').textContent = sub && sub.active ? sub.plan_name : 'Нет подписки';
+      loadReferralData();
+    } else {
+      out.style.display = ''; inn.classList.remove('visible');
+      loadReferralData();
+    }
+  }
+
+  // ─── PAYMENT ───
+  function startPayment(planKey) {
+    currentPlan = planKey;
+    // FIX: незарегистрированный пользователь → открываем логин, не показываем ошибку
+    if (!getToken()) {
+      openModal('login');
+      setTimeout(() => {
+        showAlert('login', 'error', 'Войдите или зарегистрируйтесь, чтобы оформить подписку');
+      }, 100);
+      return;
+    }
+
+    const plan = PLANS[planKey] || PLANS['1m'];
+    const desc = document.getElementById('pay-desc');
+    if (desc) {
+      desc.textContent = '';
+      const text = document.createTextNode('Тариф: ');
+      const strong = document.createElement('strong');
+      strong.textContent = plan.label;
+      desc.appendChild(text);
+      desc.appendChild(strong);
+    }
+    const a = document.getElementById('payment-alert');
+    if (a) { a.className = 'alert'; a.textContent = ''; }
+    const btn = document.getElementById('btn-lava');
+    if (btn) { btn.disabled = false; btn.textContent = '💳 Оплатить картой / СБП'; }
+    isPaymentPending = false;
+    openModal('payment');
+  }
+
+  async function doLavaPayment() {
+    // FIX: если токен пропал к моменту нажатия — редиректим на логин
+    if (!getToken()) {
+      closeModal('payment');
+      openModal('login');
+      return;
+    }
+    if (isPaymentPending) return;
+    isPaymentPending = true;
+    const btn = document.getElementById('btn-lava');
+    btn.disabled = true; btn.textContent = 'Создаём счёт...';
+    try {
+      const { ok, data } = await apiFetch('/payment/create', {
+        method: 'POST',
+        body: JSON.stringify({ plan: currentPlan })
+      });
+      if (ok && data.payment_url) {
+        if (tg && tg.openLink) {
+          tg.openLink(data.payment_url);
+        } else {
+          window.open(data.payment_url, '_blank');
+        }
+        closeModal('payment');
+      } else {
+        showAlert('payment', 'error', data.detail || data.message || 'Ошибка платежа. Попробуйте позже.');
+        btn.disabled = false; btn.textContent = '💳 Оплатить картой / СБП';
+        isPaymentPending = false;
+      }
+    } catch {
+      showAlert('payment', 'error', 'Ошибка соединения. Попробуйте позже.');
+      btn.disabled = false; btn.textContent = '💳 Оплатить картой / СБП';
+      isPaymentPending = false;
+    }
+  }
+
+  // ─── FAQ ───
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  // ─── INIT ───
+  document.addEventListener('DOMContentLoaded', async () => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    captureReferralCode();
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('email_verified') === '1') {
+      openModal('login');
+      showAlert('login', 'success', 'Email подтверждён. Теперь можно войти.');
+      history.replaceState(null, '', window.location.pathname);
+    }
+
+    const hasToken = !!getToken();
+    const hasRefresh = !!getRefreshToken();
+    const isTgApp = tg && !!tg.initData;
+
+    if (hasToken) {
+      loadUserData();
+    } else if (hasRefresh) {
+      // FIX: есть refresh, но нет access → сразу обновляем перед loadUserData
+      const refreshed = await tryRefreshToken();
+      if (refreshed) loadUserData();
+    } else if (isTgApp) {
+      doTgAuth();
+    }
+
+    loadReferralData();
+  });
+</script>
+</body>
+</html>
