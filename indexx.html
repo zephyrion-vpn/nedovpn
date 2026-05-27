@@ -153,7 +153,7 @@
   .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
   /* Убираем инлайн-стиль — выносим в CSS */
-  .nav-auth-out { display: flex; gap: 4px; align-items: center; }
+  .nav-auth-out { display: flex; gap: 4px; align-items: center; flex-shrink: 0; }
 
   .btn-ghost {
     background: none;
@@ -1113,6 +1113,7 @@
   .alert { padding: 10px 14px; border-radius: 9px; font-size: 13px; margin-bottom: 14px; display: none; }
   .alert.error { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; display: block; }
   .alert.success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; display: block; }
+  .alert.info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; display: block; }
 
   .modal-scroll { max-height: 60vh; overflow-y: auto; padding-right: 6px; }
   .modal-scroll::-webkit-scrollbar { width: 3px; }
@@ -1231,8 +1232,10 @@
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .hamburger { display: flex; }
-    .nav-inner { padding: 0 12px; gap: 4px; }
-    .logo { font-size: 18px; }
+    .nav-inner { padding: 0 10px; gap: 6px; }
+    .logo { font-size: 17px; flex-shrink: 1; min-width: 0; }
+    .nav-actions { flex-shrink: 0; }
+    .btn-pink { padding: 6px 11px; font-size: 12px; white-space: nowrap; }
     .hero { padding: 84px 20px 48px; }
     .hero-title { letter-spacing: -2px; }
     .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
@@ -1337,8 +1340,7 @@
     </ul>
     <div class="nav-actions">
       <div id="nav-auth-out" class="nav-auth-out">
-        <button class="btn-ghost" onclick="openModal('login')">Войти</button>
-        <button class="btn-pink" onclick="startPayment('1m')">Начать</button>
+        <button class="btn-pink" onclick="openModal('login')">Войти</button>
       </div>
       <div id="nav-auth-in" class="user-nav">
         <a href="#" id="nav-username" class="user-name" style="text-decoration:none;color:inherit;" onclick="event.preventDefault();openProfileModal(currentSub)">—</a>
@@ -1364,8 +1366,7 @@
   <a href="#referrals" onclick="closeMenu()" role="menuitem">Рефералы</a>
   <a href="#contacts" onclick="closeMenu()" role="menuitem">Контакты</a>
   <a href="#faq" onclick="closeMenu()" role="menuitem">FAQ</a>
-  <button onclick="closeMenu(); openModal('login')" role="menuitem">Войти</button>
-  <button class="mob-buy" onclick="closeMenu(); startPayment('1m')" role="menuitem">Купить подписку</button>
+  <button class="mob-buy" onclick="closeMenu(); openModal('login')" role="menuitem">Войти</button>
 </div>
 
 <main>
@@ -1382,7 +1383,7 @@
       </h1>
       <p class="hero-sub">Протокол VLESS + Reality — трафик неотличим от HTTPS.<br>Быстро. Надёжно. Без лишнего шума.</p>
       <div class="hero-buttons">
-        <button class="btn-pink-lg" onclick="startPayment('1m')">Подключиться</button>
+        <button class="btn-pink-lg" onclick="openModal('login')">Войти</button>
         <a href="#features" class="btn-outline">Узнать больше</a>
       </div>
       <div class="hero-tg-note">
@@ -2254,6 +2255,12 @@
             await loadUserData();
             openProfileModal(currentSub);
           }, 1500);
+        } else {
+          // Если токенов нет, переключаем на вкладку входа
+          setTimeout(() => {
+            switchAuthTab('login');
+            document.getElementById('login-email').value = email;
+          }, 1200);
         }
       } else {
         showAlert('reg', 'error', data.detail || data.message || 'Ошибка регистрации');
@@ -2304,7 +2311,7 @@
       } else if (data && data.detail && data.detail.toLowerCase().includes('not found')) {
         // Аккаунт не найден — переключаем на вкладку регистрации
         switchAuthTab('reg');
-        showAlert('login', 'error', 'Аккаунт не найден. Пожалуйста, зарегистрируйтесь.');
+        showAlert('reg', 'info', 'Аккаунт не найден. Пожалуйста, зарегистрируйтесь.');
       } else {
         showAlert('login', 'error', data.detail || data.message || 'Неверный email или пароль');
       }
