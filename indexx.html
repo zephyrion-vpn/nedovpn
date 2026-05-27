@@ -111,12 +111,12 @@
   .nav-inner {
     max-width: 1160px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 16px;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 8px;
   }
 
   .logo {
@@ -150,20 +150,20 @@
 
   .nav-links a:hover { color: var(--dark); }
 
-  .nav-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 
   /* Убираем инлайн-стиль — выносим в CSS */
-  .nav-auth-out { display: flex; gap: 8px; align-items: center; }
+  .nav-auth-out { display: flex; gap: 4px; align-items: center; }
 
   .btn-ghost {
     background: none;
     border: none;
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--dark);
     cursor: pointer;
-    padding: 8px 14px;
+    padding: 6px 10px;
     border-radius: var(--radius-pill);
     transition: background 0.2s;
     white-space: nowrap;
@@ -191,9 +191,9 @@
     color: var(--white);
     border: none;
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    padding: 9px 20px;
+    padding: 7px 14px;
     border-radius: var(--radius-pill);
     cursor: pointer;
     transition: all 0.25s;
@@ -332,12 +332,12 @@
   .hamburger.active span:nth-child(2) { opacity: 0; }
   .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-  .user-nav { display: none; align-items: center; gap: 10px; }
+  .user-nav { display: none; align-items: center; gap: 6px; }
   .user-nav.visible { display: flex; }
-  .user-name { font-size: 13px; font-weight: 600; color: var(--dark); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-name { font-size: 12px; font-weight: 600; color: var(--dark); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sub-badge {
-    font-size: 11px; font-weight: 700;
-    padding: 3px 10px;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px;
     border-radius: var(--radius-pill);
     background: var(--pink-light);
     color: var(--pink);
@@ -1231,6 +1231,8 @@
   @media (max-width: 768px) {
     .nav-links { display: none; }
     .hamburger { display: flex; }
+    .nav-inner { padding: 0 12px; gap: 4px; }
+    .logo { font-size: 18px; }
     .hero { padding: 84px 20px 48px; }
     .hero-title { letter-spacing: -2px; }
     .stats-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px; }
@@ -1267,6 +1269,12 @@
     /* Profile URL row на мобилке */
     .profile-url-row { flex-direction: column; }
     .profile-url-row input { font-size: 11px; }
+    /* Mobile nav auth buttons compact */
+    .nav-auth-out { gap: 2px; }
+    .btn-ghost { padding: 5px 8px; font-size: 12px; }
+    .btn-pink { padding: 6px 10px; font-size: 12px; }
+    .user-name { max-width: 60px; font-size: 11px; }
+    .sub-badge { font-size: 9px; padding: 2px 4px; }
   }
 
   @media (max-width: 480px) {
@@ -2293,6 +2301,10 @@
         } else {
           openProfileModal(currentSub);
         }
+      } else if (data && data.detail && data.detail.toLowerCase().includes('not found')) {
+        // Аккаунт не найден — переключаем на вкладку регистрации
+        switchAuthTab('reg');
+        showAlert('login', 'error', 'Аккаунт не найден. Пожалуйста, зарегистрируйтесь.');
       } else {
         showAlert('login', 'error', data.detail || data.message || 'Неверный email или пароль');
       }
@@ -2443,9 +2455,6 @@
     // FIX: незарегистрированный пользователь → открываем логин, не показываем ошибку
     if (!getToken()) {
       openModal('login');
-      setTimeout(() => {
-        showAlert('login', 'error', 'Войдите или зарегистрируйтесь, чтобы оформить подписку');
-      }, 100);
       return;
     }
 
